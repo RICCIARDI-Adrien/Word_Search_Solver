@@ -1,5 +1,5 @@
 /** @file Word_List.h
- * A statically allocated list containing statically allocated strings.
+ * A dynamically allocated list containing statically allocated strings.
  * @author Adrien RICCIARDI
  */
 #ifndef H_WORD_LIST_H
@@ -10,14 +10,14 @@
 //-------------------------------------------------------------------------------------------------
 // Types
 //-------------------------------------------------------------------------------------------------
-/** TODO */
+/** A word in a list. */
 typedef struct TWordListItem
 {
-	char String_Word[CONFIGURATION_WORD_LIST_ITEM_STRING_SIZE];
+	char String_Word[CONFIGURATION_WORD_LIST_ITEM_MAXIMUM_STRING_SIZE];
 	struct TWordListItem *Pointer_Next_Item;
 } TWordListItem;
 
-/** TODO */
+/** The list object. */
 typedef struct
 {
 	int Size;
@@ -27,11 +27,15 @@ typedef struct
 //-------------------------------------------------------------------------------------------------
 // Functions
 //-------------------------------------------------------------------------------------------------
-/** TODO */
+/** Clear the list to make it ready to use.
+ * @param Pointer_Word_List The list to initialize.
+ * @note Initializing a non-empty list will result in a memory leak.
+ */
 void WordListInitialize(TWordList *Pointer_Word_List);
 
-/** TODO
- * @param PointerStringWord The string to insert into the list. The provided string will be copied into the list internal memory.
+/** Add a new word item at the head of the list.
+ * @param Pointer_Word_List The list to insert the word to.
+ * @param Pointer_String_Word The string to insert into the list. The provided string will be copied into the list internal memory.
  * @return -2 if the provided word string is too long,
  * @return -1 if no more heap memory is available,
  * @return 0 on success.

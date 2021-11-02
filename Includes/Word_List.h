@@ -14,6 +14,7 @@
 typedef struct TWordListItem
 {
 	char String_Word[CONFIGURATION_WORD_LIST_ITEM_MAXIMUM_STRING_SIZE];
+	struct TWordListItem *Pointer_Previous_Item;
 	struct TWordListItem *Pointer_Next_Item;
 } TWordListItem;
 
@@ -41,5 +42,17 @@ void WordListInitialize(TWordList *Pointer_Word_List);
  * @return 0 on success.
  */
 int WordListInsert(TWordList *Pointer_Word_List, char *Pointer_String_Word);
+
+/** Remove a specific item from a list.
+ * @param Pointer_Word_List The list to remove an item from.
+ * @param Pointer_Item The item to remove. If the provided item does not belong to the list, the result will be unpredictable.
+ * @return The item following the one that has been removed (this can be NULL if the last list item was removed).
+ */
+TWordListItem *WordListRemove(TWordList *Pointer_Word_List, TWordListItem *Pointer_Item);
+
+/** Print a list content on the console, this is a debug function.
+ * @param Pointer_Word_List The list to print.
+ */
+void WordListDisplay(TWordList *Pointer_Word_List);
 
 #endif

@@ -7,5 +7,8 @@ SOURCES = $(wildcard Sources/*.c)
 all:
 	$(CC) $(CFLAGS) $(SOURCES) -o $(BINARY)
 
+debug: CFLAGS += -g
+debug: all
+
 clean:
 	rm -rf $(BINARY)

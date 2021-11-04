@@ -29,7 +29,7 @@ static int Main_Grid_Columns_Count;
 int MainSolveGrid(void)
 {
 	int Row, Column, Found_Words_Count = 0;
-	char Character, String_Hidden_Word[CONFIGURATION_WORD_LIST_ITEM_MAXIMUM_STRING_SIZE] = {0}, String_Temporary[2];
+	char Character;
 	TWordList *Pointer_Word_List;
 	TWordListItem *Pointer_Word_List_Item;
 
@@ -41,20 +41,8 @@ int MainSolveGrid(void)
 			// Cache the character corresponding to the current location
 			Character = GridGetLetter(Row, Column);
 
-			// Go to next character if this one has already been processed
-			//if (Character == CONFIGURATION_GRID_REMOVED_CHARACTER) continue;
-
 			// Determine the word list to use according to the letter value
 			Pointer_Word_List = &Main_Word_Lists[Character - 'A'];
-
-			// If the list is empty, that means that this letter is part of the hidden word
-			/*if (Pointer_Word_List->Size == 0)
-			{
-				String_Temporary[0] = Character;
-				String_Temporary[1] = 0;
-				strcat(String_Hidden_Word, String_Temporary);
-				continue;
-			}*/
 
 			// Check all possible words
 			Pointer_Word_List_Item = Pointer_Word_List->Pointer_Head_Item;
@@ -72,9 +60,6 @@ int MainSolveGrid(void)
 		}
 	}
 
-	// Display the hidden word if it is not empty
-	if (String_Hidden_Word[0] != 0) printf("Hidden word : \"%s\".\n", String_Hidden_Word);
-
 	return 0;
 }
 
@@ -83,6 +68,9 @@ int MainSolveGrid(void)
 //-------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
+	int i;
+	char String_Hidden_Word[CONFIGURATION_WORD_LIST_ITEM_MAXIMUM_STRING_SIZE];
+
 	// Check arguments
 	if (argc != 2)
 	{
@@ -104,6 +92,25 @@ int main(int argc, char *argv[])
 		printf("Error : this grid is invalid, no solution could be found.\n");
 		return EXIT_FAILURE;
 	}
+
+	// Make sure all words have been found
+	for (i = 0; i < CONFIGURATION_ALPHABET_LETTERS_COUNT; i++)
+	{
+		if (Main_Word_Lists[i].Size > 0)
+		{
+			printf("Error : some words were not found in the grid, the grid seems to be invalid.\n");
+			return EXIT_FAILURE;
+		}
+	}
+
+	// Try to display the hidden word
+	if (GridGetHiddenWord(String_Hidden_Word) != 0)
+	{
+		printf("Error : the hidden word is too long, the grid seems to be invalid.\n");
+		return EXIT_FAILURE;
+	}
+	if (String_Hidden_Word[0] == 0) printf("This grid does not contain a hidden word.\n");
+	else printf("Hidden word : \"%s\".\n", String_Hidden_Word);
 
 	return EXIT_SUCCESS;
 }

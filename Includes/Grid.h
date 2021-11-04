@@ -36,6 +36,13 @@ char GridGetLetter(int Row, int Column);
  */
 int GridMatchWordWithPosition(char *Pointer_String_Word, int Row, int Column);
 
+/** Call this function when all words have been found, it will return the untouched letters in order.
+ * @param Pointer_String_Hidden_Word On output, contain the hidden word string. Provide a buffer with room for CONFIGURATION_WORD_LIST_ITEM_MAXIMUM_STRING_SIZE bytes.
+ * @return -1 if the hidden word is too long to fit in the provided buffer (in this case it is considered as invalid),
+ * @return 0 if the hidden word is correct.
+ */
+int GridGetHiddenWord(char *Pointer_String_Hidden_Word);
+
 /** Display the grid content on the console, this is a debug function. */
 void GridDisplay(void);
 

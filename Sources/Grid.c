@@ -8,10 +8,20 @@
 #include <string.h>
 
 //-------------------------------------------------------------------------------------------------
+// Private types
+//-------------------------------------------------------------------------------------------------
+/** A grid cell, containing a letter and a flag telling whether the letter is part of a searched word. */
+typedef struct
+{
+	char Letter;
+	int Is_Letter_Present_In_Word;
+} TGridCell;
+
+//-------------------------------------------------------------------------------------------------
 // Private variables
 //-------------------------------------------------------------------------------------------------
 /** The grid containing the letters to search words from. */
-static char Grid_Content[CONFIGURATION_GRID_MAXIMUM_SIZE * CONFIGURATION_GRID_MAXIMUM_SIZE];
+static TGridCell Grid_Cells[CONFIGURATION_GRID_MAXIMUM_SIZE * CONFIGURATION_GRID_MAXIMUM_SIZE];
 
 /** How many rows have the loaded grid. */
 static int Grid_Rows_Count = 0;
@@ -51,8 +61,11 @@ static int GridValidateString(char *Pointer_String)
 	return 0;
 }
 
-/** TODO */
-/*void GridClearLetter(int Row, int Column)
+/** Tell that the letter at the specified location is part of a word.
+ * @param Row The vertical coordinate.
+ * @param Column The horizontal coordinate.
+ */
+void GridSetLetterFound(int Row, int Column)
 {
 	// Make sure provided coordinates are valid
 	if ((Row < 0) || (Row >= Grid_Rows_Count) || (Column < 0) || (Column >= Grid_Columns_Count))
@@ -61,8 +74,8 @@ static int GridValidateString(char *Pointer_String)
 		return;
 	}
 
-	Grid_Content[Row * Grid_Columns_Count + Column] = CONFIGURATION_GRID_REMOVED_CHARACTER;
-}*/
+	Grid_Cells[Row * Grid_Columns_Count + Column].Is_Letter_Present_In_Word = 1;
+}
 
 //-------------------------------------------------------------------------------------------------
 // Public functions
@@ -70,9 +83,10 @@ static int GridValidateString(char *Pointer_String)
 int GridLoadFromFile(char *Pointer_String_File_Name, TWordList *Pointer_Word_Lists, int *Pointer_Rows_Count, int *Pointer_Columns_Count)
 {
 	FILE *Pointer_File = NULL;
-	int Return_Value = -1, Words_Count = 0;
-	char String_Temporary[256], *Pointer_Grid_Content = Grid_Content;
-	size_t i, Length;
+	int i, Return_Value = -1, Words_Count = 0;
+	char String_Temporary[256];
+	size_t Length;
+	TGridCell *Pointer_Grid_Cell = Grid_Cells;
 
 	// Try to open the file
 	Pointer_File = fopen(Pointer_String_File_Name, "r");
@@ -130,8 +144,11 @@ int GridLoadFromFile(char *Pointer_String_File_Name, TWordList *Pointer_Word_Lis
 		}
 
 		// Fill the current grid row with the read content
-		memcpy(Pointer_Grid_Content, String_Temporary, Length);
-		Pointer_Grid_Content += Grid_Columns_Count;
+		for (i = 0; i < Grid_Columns_Count; i++)
+		{
+			Pointer_Grid_Cell->Letter = String_Temporary[i];
+			Pointer_Grid_Cell++;
+		}
 		Grid_Rows_Count++;
 	}
 
@@ -205,12 +222,12 @@ char GridGetLetter(int Row, int Column)
 		return 0;
 	}
 
-	return Grid_Content[Row * Grid_Columns_Count + Column];
+	return Grid_Cells[Row * Grid_Columns_Count + Column].Letter;
 }
 
 int GridMatchWordWithPosition(char *Pointer_String_Word, int Row, int Column)
 {
-	int Word_Length, i, j;
+	int Word_Length, i;
 	char String_Temporary[CONFIGURATION_WORD_LIST_ITEM_MAXIMUM_STRING_SIZE], *Pointer_String_Temporary;
 
 	// Cache word to search length
@@ -229,7 +246,11 @@ int GridMatchWordWithPosition(char *Pointer_String_Word, int Row, int Column)
 		*Pointer_String_Temporary = 0;
 
 		// Does the searched word match ?
-		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0) return 0;
+		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0)
+		{
+			for (i = 0; i < Word_Length; i++) GridSetLetterFound(Row - i, Column);
+			return 0;
+		}
 	}
 
 	// Can the word be compared to the location's north east ?
@@ -245,7 +266,11 @@ int GridMatchWordWithPosition(char *Pointer_String_Word, int Row, int Column)
 		*Pointer_String_Temporary = 0;
 
 		// Does the searched word match ?
-		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0) return 0;
+		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0)
+		{
+			for (i = 0; i < Word_Length; i++) GridSetLetterFound(Row - i, Column + i);
+			return 0;
+		}
 	}
 
 	// Can the word be compared to the location's east ?
@@ -261,7 +286,11 @@ int GridMatchWordWithPosition(char *Pointer_String_Word, int Row, int Column)
 		*Pointer_String_Temporary = 0;
 
 		// Does the searched word match ?
-		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0) return 0;
+		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0)
+		{
+			for (i = 0; i < Word_Length; i++) GridSetLetterFound(Row, Column + i);
+			return 0;
+		}
 	}
 
 	// Can the word be compared to the location's south east ?
@@ -277,7 +306,11 @@ int GridMatchWordWithPosition(char *Pointer_String_Word, int Row, int Column)
 		*Pointer_String_Temporary = 0;
 
 		// Does the searched word match ?
-		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0) return 0;
+		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0)
+		{
+			for (i = 0; i < Word_Length; i++) GridSetLetterFound(Row + i, Column + i);
+			return 0;
+		}
 	}
 
 	// Can the word be compared to the location's south ?
@@ -293,7 +326,11 @@ int GridMatchWordWithPosition(char *Pointer_String_Word, int Row, int Column)
 		*Pointer_String_Temporary = 0;
 
 		// Does the searched word match ?
-		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0) return 0;
+		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0)
+		{
+			for (i = 0; i < Word_Length; i++) GridSetLetterFound(Row + i, Column);
+			return 0;
+		}
 	}
 
 	// Can the word be compared to the location's south west
@@ -309,7 +346,11 @@ int GridMatchWordWithPosition(char *Pointer_String_Word, int Row, int Column)
 		*Pointer_String_Temporary = 0;
 
 		// Does the searched word match ?
-		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0) return 0;
+		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0)
+		{
+			for (i = 0; i < Word_Length; i++) GridSetLetterFound(Row + i, Column - i);
+			return 0;
+		}
 	}
 
 	// Can the word be compared to the location's west
@@ -325,7 +366,11 @@ int GridMatchWordWithPosition(char *Pointer_String_Word, int Row, int Column)
 		*Pointer_String_Temporary = 0;
 
 		// Does the searched word match ?
-		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0) return 0;
+		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0)
+		{
+			for (i = 0; i < Word_Length; i++) GridSetLetterFound(Row, Column - i);
+			return 0;
+		}
 	}
 
 	// Can the word be compared to the location's north west
@@ -341,10 +386,47 @@ int GridMatchWordWithPosition(char *Pointer_String_Word, int Row, int Column)
 		*Pointer_String_Temporary = 0;
 
 		// Does the searched word match ?
-		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0) return 0;
+		if (strncmp(Pointer_String_Word, String_Temporary, Word_Length) == 0)
+		{
+			for (i = 0; i < Word_Length; i++) GridSetLetterFound(Row - i, Column - i);
+			return 0;
+		}
 	}
 
 	return -1;
+}
+
+int GridGetHiddenWord(char *Pointer_String_Hidden_Word)
+{
+	int Row, Column, Size = 0;
+	TGridCell *Pointer_Cell;
+
+	// Make sure to not exceed output string size
+	for (Row = 0; Row < Grid_Rows_Count; Row++)
+	{
+		for (Column = 0; Column < Grid_Columns_Count; Column++)
+		{
+			// Cache cell access
+			Pointer_Cell = &Grid_Cells[Row * Grid_Columns_Count + Column];
+
+			// Is this letter part of the hidden word ?
+			if (!Pointer_Cell->Is_Letter_Present_In_Word)
+			{
+				// Make sure there is enough room in the string buffer
+				if (Size >= CONFIGURATION_WORD_LIST_ITEM_MAXIMUM_STRING_SIZE - 1) return -1;
+
+				// Append the character to the string
+				*Pointer_String_Hidden_Word = Pointer_Cell->Letter;
+				Pointer_String_Hidden_Word++;
+				Size++;
+			}
+		}
+	}
+
+	// Terminate string
+	*Pointer_String_Hidden_Word = 0;
+
+	return 0;
 }
 
 void GridDisplay(void)
@@ -353,7 +435,7 @@ void GridDisplay(void)
 
 	for (Row = 0; Row < Grid_Rows_Count; Row++)
 	{
-		for (Column = 0; Column < Grid_Columns_Count; Column++) putchar(Grid_Content[Row * Grid_Columns_Count + Column]);
+		for (Column = 0; Column < Grid_Columns_Count; Column++) putchar(Grid_Cells[Row * Grid_Columns_Count + Column].Letter);
 		putchar('\n');
 	}
 }

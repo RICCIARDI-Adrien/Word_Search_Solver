@@ -71,15 +71,24 @@ int main(int argc, char *argv[])
 	int i;
 	char String_Hidden_Word[CONFIGURATION_WORD_LIST_ITEM_MAXIMUM_STRING_SIZE];
 
+	// Display banner
+	printf("+---------------------------+\n"
+		"|    Word search solver     |\n"
+		"| (C) 2021 Adrien RICCIARDI |\n"
+		"+---------------------------+\n");
+
 	// Check arguments
 	if (argc != 2)
 	{
-		printf("Usage : %s Word_Search_File\n", argv[0]);
-		// TODO add file format
+		printf("Usage : %s Word_Search_File\n"
+			"Word search file format consists of the grid content, followed by the separating character '-', then followed by the list of the words to search (one per line).\n"
+			"Only ASCII letters (from A to Z), both uppercase of lowercase, are accepted.\n"
+			"See test files in the Tests directory for examples.\n", argv[0]);
 		return EXIT_FAILURE;
 	}
 
 	// Try to load the specified file
+	printf("Trying to solve the file \"%s\".\n", argv[1]);
 	if (GridLoadFromFile(argv[1], Main_Word_Lists, &Main_Grid_Rows_Count, &Main_Grid_Columns_Count) != 0)
 	{
 		printf("The specified file \"%s\" is invalid\n.", argv[1]);

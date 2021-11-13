@@ -11,6 +11,9 @@
 /** The maximum size (including the terminating zero) of a word to search. */
 #define CONFIGURATION_WORD_LIST_ITEM_MAXIMUM_STRING_SIZE 32
 
+/** How long can be the hidden word (it can exceed the largest grid dimension). */
+#define CONFIGURATION_HIDDEN_WORD_MAXIMUM_STRING_SIZE 256
+
 /** The grid containing the letters to search the words from won't be greater than this dimension. */
 #define CONFIGURATION_GRID_MAXIMUM_SIZE CONFIGURATION_WORD_LIST_ITEM_MAXIMUM_STRING_SIZE
 

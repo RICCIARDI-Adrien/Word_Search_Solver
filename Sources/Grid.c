@@ -413,7 +413,7 @@ int GridGetHiddenWord(char *Pointer_String_Hidden_Word)
 			if (!Pointer_Cell->Is_Letter_Present_In_Word)
 			{
 				// Make sure there is enough room in the string buffer
-				if (Size >= CONFIGURATION_WORD_LIST_ITEM_MAXIMUM_STRING_SIZE - 1) return -1;
+				if (Size >= CONFIGURATION_HIDDEN_WORD_MAXIMUM_STRING_SIZE - 1) return -1;
 
 				// Append the character to the string
 				*Pointer_String_Hidden_Word = Pointer_Cell->Letter;

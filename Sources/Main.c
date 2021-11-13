@@ -69,7 +69,7 @@ int MainSolveGrid(void)
 int main(int argc, char *argv[])
 {
 	int i;
-	char String_Hidden_Word[CONFIGURATION_WORD_LIST_ITEM_MAXIMUM_STRING_SIZE];
+	char String_Hidden_Word[CONFIGURATION_HIDDEN_WORD_MAXIMUM_STRING_SIZE];
 
 	// Display banner
 	printf("+---------------------------+\n"

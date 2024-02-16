@@ -33,7 +33,7 @@ Grid_Columns_Count=$(echo $Grid_Size_Line | cut -d ',' -f 1)
 Grid_Rows_Count=$(echo $Grid_Size_Line | cut -d ',' -f 2)
 
 # Extract the words to search and convert french unicode characters to ASCII
-Words_List=$(echo $Raw_Line | sed -e 's/wordSearchInit(\[.*\],\[//;s/\],[0-9].*//;s/\"//g;s/,/ /g;s/Â/A/g;s/Ä/A/g;s/Ç/C/g;s/É/E/g;s/È/E/g;s/Ê/E/g;s/Ë/E/g;s/Ô/O/g;s/Î/I/g;s/Ï/I/g')
+Words_List=$(echo $Raw_Line | sed -e 's/wordSearchInit(\[.*\],\[//;s/\],[0-9].*//;s/\"//g;s/,/ /g;s/À/A/g;s/Â/A/g;s/Ä/A/g;s/Ç/C/g;s/É/E/g;s/È/E/g;s/Ê/E/g;s/Ë/E/g;s/Ô/O/g;s/Î/I/g;s/Ï/I/g;s/Û/U/g')
 
 # Retrieve the HTML line containing the grid letters
 Raw_Line=$(grep "<span id=\"char_" /tmp/Relaxweb_${Grid_Number}.html)
@@ -44,7 +44,7 @@ then
 fi
 
 # Extract the grid content and replace non-ASCII characters
-Grid_Letters=$(echo $Raw_Line | sed -e 's/<span id="char_[0-9]*_[0-9]*" class="char">//g;s/<\/span>//g;s/<br>//g;s/<\/div>//g;s/ //g;s/Â/A/g;s/Ä/A/g;s/Ç/C/g;s/É/E/g;s/È/E/g;s/Ê/E/g;s/Ë/E/g;s/Ô/O/g;s/Î/I/g;s/Ï/I/g')
+Grid_Letters=$(echo $Raw_Line | sed -e 's/<span id="char_[0-9]*_[0-9]*" class="char">//g;s/<\/span>//g;s/<br>//g;s/<\/div>//g;s/ //g;s/À/A/g;s/Â/A/g;s/Ä/A/g;s/Ç/C/g;s/É/E/g;s/È/E/g;s/Ê/E/g;s/Ë/E/g;s/Ô/O/g;s/Î/I/g;s/Ï/I/g;s/Û/U/g')
 
 # Clear any previous file
 File_Name=Relaxweb_${Grid_Number}.txt

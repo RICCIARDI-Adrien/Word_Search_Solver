@@ -73,10 +73,10 @@ int main(int argc, char *argv[])
 	char String_Hidden_Word[CONFIGURATION_HIDDEN_WORD_MAXIMUM_STRING_SIZE];
 
 	// Display banner
-	printf("+---------------------------+\n"
-		"|    Word search solver     |\n"
-		"| (C) 2021 Adrien RICCIARDI |\n"
-		"+---------------------------+\n");
+	printf("+--------------------------------+\n"
+		"|       Word search solver       |\n"
+		"| (C) 2021-2024 Adrien RICCIARDI |\n"
+		"+--------------------------------+\n");
 
 	// Check arguments
 	if (argc != 2)

@@ -23,12 +23,13 @@ static int Main_Grid_Columns_Count;
 // Private functions
 //-------------------------------------------------------------------------------------------------
 /** Solve the grid in the smoothest way and print the hidden word.
+ * @param Remaining_Words_Count The amount of words to find.
  * @return -1 if the grid logic is invalid,
  * @return 0 on success.
  */
-int MainSolveGrid(void)
+int MainSolveGrid(int Remaining_Words_Count)
 {
-	int Row, Column, Found_Words_Count = 0;
+	int Row, Column;
 	char Character;
 	TWordList *Pointer_Word_List;
 	TWordListItem *Pointer_Word_List_Item;
@@ -50,8 +51,8 @@ int MainSolveGrid(void)
 			{
 				if (GridMatchWordWithPosition(Pointer_Word_List_Item->String_Word, Row, Column) == 0)
 				{
-					Found_Words_Count++;
-					printf("Found word \"%s\" at row %d and column %d (%d words have been found).\n", Pointer_Word_List_Item->String_Word, Row + 1, Column + 1, Found_Words_Count);
+					Remaining_Words_Count--;
+					printf("Found word \"%s\" at row %d and column %d (%d word(s) remaining to be found).\n", Pointer_Word_List_Item->String_Word, Row + 1, Column + 1, Remaining_Words_Count);
 					Pointer_Word_List_Item = WordListRemove(Pointer_Word_List, Pointer_Word_List_Item); // The function returns the item following the one that has been deleted
 				}
 				// Proceed to next word
@@ -68,7 +69,7 @@ int MainSolveGrid(void)
 //-------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
-	int i;
+	int i, Words_Count;
 	char String_Hidden_Word[CONFIGURATION_HIDDEN_WORD_MAXIMUM_STRING_SIZE];
 
 	// Display banner
@@ -89,14 +90,14 @@ int main(int argc, char *argv[])
 
 	// Try to load the specified file
 	printf("Trying to solve the file \"%s\".\n", argv[1]);
-	if (GridLoadFromFile(argv[1], Main_Word_Lists, &Main_Grid_Rows_Count, &Main_Grid_Columns_Count) != 0)
+	if (GridLoadFromFile(argv[1], Main_Word_Lists, &Main_Grid_Rows_Count, &Main_Grid_Columns_Count, &Words_Count) != 0)
 	{
 		printf("The specified file \"%s\" is invalid\n.", argv[1]);
 		return EXIT_FAILURE;
 	}
 
 	// Try to find all searched words and the hidden word
-	if (MainSolveGrid() != 0)
+	if (MainSolveGrid(Words_Count) != 0)
 	{
 		printf("Error : this grid is invalid, no solution could be found.\n");
 		return EXIT_FAILURE;

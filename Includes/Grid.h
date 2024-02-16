@@ -15,10 +15,11 @@
  * @param Pointer_Word_Lists On output, fill the word lists (one per alphabet letter).
  * @param Pointer_Rows_Count On output, contain the grid row dimension.
  * @param Pointer_Columns_Count On output, contain the grid column dimension.
+ * @param Pointer_Words_Count On output, contain the amount of words to find in the grid.
  * @return -1 if an error occurred,
  * @return 0 on success.
  */
-int GridLoadFromFile(char *Pointer_String_File_Name, TWordList *Pointer_Word_Lists, int *Pointer_Rows_Count, int *Pointer_Columns_Count);
+int GridLoadFromFile(char *Pointer_String_File_Name, TWordList *Pointer_Word_Lists, int *Pointer_Rows_Count, int *Pointer_Columns_Count, int *Pointer_Words_Count);
 
 /** Get the letter corresponding to a grid coordinate.
  * @param Row The row coordinate.

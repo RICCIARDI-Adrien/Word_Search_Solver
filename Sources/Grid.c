@@ -80,7 +80,7 @@ void GridSetLetterFound(int Row, int Column)
 //-------------------------------------------------------------------------------------------------
 // Public functions
 //-------------------------------------------------------------------------------------------------
-int GridLoadFromFile(char *Pointer_String_File_Name, TWordList *Pointer_Word_Lists, int *Pointer_Rows_Count, int *Pointer_Columns_Count)
+int GridLoadFromFile(char *Pointer_String_File_Name, TWordList *Pointer_Word_Lists, int *Pointer_Rows_Count, int *Pointer_Columns_Count, int *Pointer_Words_Count)
 {
 	FILE *Pointer_File = NULL;
 	int i, Return_Value = -1, Words_Count = 0;
@@ -203,6 +203,7 @@ int GridLoadFromFile(char *Pointer_String_File_Name, TWordList *Pointer_Word_Lis
 
 	*Pointer_Rows_Count = Grid_Rows_Count;
 	*Pointer_Columns_Count = Grid_Columns_Count;
+	*Pointer_Words_Count = Words_Count;
 
 	// Everything went fine, display some statistics
 	printf("Successfully loaded a %dx%d grid and %d words to search.\n", Grid_Columns_Count, Grid_Rows_Count, Words_Count);
